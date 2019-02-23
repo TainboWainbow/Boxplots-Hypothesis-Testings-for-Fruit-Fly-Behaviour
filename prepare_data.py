@@ -51,5 +51,8 @@ while row < (lastrow + 1):
       tempset.append(sec)
   
   row = row + 1
-      
+ 
+
+print set_of_dur
+print set_of_time
   
