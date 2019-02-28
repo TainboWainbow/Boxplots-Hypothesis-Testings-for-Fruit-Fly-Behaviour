@@ -7,82 +7,95 @@ dat$"ON/OFF" <- as.integer(dat$"ON/OFF")
 dat$Seconds <- dat$Seconds-dat$Seconds[1]
 ###############################################################################################################
 
-# Temporary list to record the indices at which the fly's state changes
+# Obtain a list recording the indices of 'dat' at which the fly's state changes
 # from 0 to 1, or from 1 to 0
-temp <- c(1) # adding the first index
-flag <- 0
+state_change <- c(1) # adding the first index
+flag <- 0 # the fly's initial state is always resting (state0)
 for (i in 2:nrow(dat)){
-  if (dat$`ON/OFF`[i] != flag | i == nrow(dat)){ # we add the last index to calculate the duration later
-    temp <- c(temp, i)
+  if (dat$`ON/OFF`[i] != flag){
+    state_change <- c(state_change, i)
     flag <- dat$`ON/OFF`[i]
   }
 }
+# NOTE: not adding the last index by Assumption 2 in 'key.pdf'
 
 
-# Obtain the duration in seconds between those changes of states
-set_of_dur <- c()
-for (k in 1:length(temp)){
-  if (k == length(temp)){
+# Obtain interval duration (unit in seconds) between those changes of states
+interval_dur <- c()
+for (k in 1:length(state_change)){
+  if (k == length(state_change)){
     break
   }
-  time1 <- dat$Seconds[temp[k]]
-  time2 <- dat$Seconds[temp[k+1]]
+  time1 <- dat$Seconds[state_change[k]]
+  time2 <- dat$Seconds[state_change[k+1]]
   duration <- time2 - time1
   
-  set_of_dur <- c(set_of_dur, duration)
+  interval_dur <- c(interval_dur, duration)
 }
 
 
-# Check if interval between two states is a true interval (if >=10 seconds for state0 and >=5 seconds for state1)
-# See the section 'Definitions' in 'key.pdf'
-truefalse <- c(TRUE) # adding TRUE first to print first index later
-for (t in 1:length(set_of_dur)){
+# Check if interval between two states is >=10 seconds for state0 and >=5 seconds for state1
+# See definitions (3) and (5) under the section 'Definitions' in 'key.pdf'
+time_enough <- c()
+for (t in 1:length(interval_dur)){
   
   if (t%%2 == 1){ # if ODD-numbered-index, it is state0
-    truefalse <- c(truefalse, set_of_dur[t] >= 10)
+    time_enough <- c(time_enough, interval_dur[t] >= 10)
     
   } else { # if (t%%2 == 0){ # if EVEN-numbered-index, it is state1
-    truefalse <- c(truefalse, set_of_dur[t] >= 5)
+    time_enough <- c(time_enough, interval_dur[t] >= 5)
   }
 }
+# adding TRUE as first entry to print first index of 'dat' later
+time_enough <- c(TRUE, time_enough)
+
 # NOTE1: this time we don't need to add the last index
 # (since if last interval is FALSE, there's no need to calculate the duration of this interval)
-# NOTE2: 'truefalse' is the same length as 'temp'
-# NOTE3: each entry 'i' in 'truefalse' represents if time interval between 
+# NOTE2: 'time_enough' is the same length as 'state_change'
+# NOTE3: each entry 'i' in 'time_enough' represents if time interval between 
 # 'i' and 'i-1' is a true state (if >=10 seconds for state0 and >=5 seconds for state1)
 
 
-# From 'truefalse', get the indices where changes to true states occur and record in 'truefalse2'
-# Then, obtain the indices of the original data, 'dat', where the changes of true states occur
+# From 'time_enough', get the indices of 'state_change' where true states changes and 
+# record in 'truestates'
+truestates <- which(time_enough == TRUE)
+
+
+# Obtain the indices of 'state_change'  where the changes of true state intervals occur
 # See 'Assumption 2' in 'key.pdf'
-truefalse2 <- which(truefalse == TRUE)
-final_indx <- c(1)
-oddeven <- "ODD" #first, we look for an ODD numbered index 
-for (j in 2:length(truefalse2)){ # start from the second index
+trueintervals <- c(1)
+# first, we look for an EVEN numbered index (state1) since the initial state of the fly is always 
+# resting (state0)
+oddeven <- "EVEN"
+for (j in 2:length(truestates)){ # start from the second index
   
-  if (oddeven == "ODD" & truefalse2[j]%%2 == 1){
-    final_indx <- c(final_indx, truefalse2[j] - 1)
+  if (oddeven == "ODD" & truestates[j]%%2 == 1){
+    trueintervals <- c(trueintervals, truestates[j])
     # for the next true state, we're looking for the next even-number-indexed state
     oddeven <- "EVEN"
     
-  } else if (oddeven == "EVEN" & truefalse2[j]%%2 == 0){
-    final_indx <- c(final_indx, truefalse2[j] - 1)
+  } else if (oddeven == "EVEN" & truestates[j]%%2 == 0){
+    trueintervals <- c(trueintervals, truestates[j])
     # for the next true state, we're looking for the next odd-number-indexed state
     oddeven <- "ODD"
   }
 }
-timept <- temp[c(final_indx)]
 
 
-# Finally, obtain the duration (in seconds) of the oscillating intervals of the true states
-# throughout the 30-minute observation of the fly
-final_dur <- c()
-for (e in 1:length(timept)){
-  if (e == length(timept)){
+# Obtain the indices of data, 'dat'
+get_indices <- state_change[c(trueintervals)]
+get_indices <- c(1, get_indices[2:length(get_indices)]-1)
+
+
+# Finally, obtain the duration (in seconds) of the oscillating true intervals of 
+# the true states throughout the 30-minute observation of the fly
+trueintervals_dur <- c()
+for (e in 1:length(get_indices)){
+  if (e == length(get_indices)){
     break
   }
-  final_dur <- c(final_dur, dat$Seconds[timept[e+1]] - dat$Seconds[timept[e]])
+  trueintervals_dur <- c(trueintervals_dur, dat$Seconds[get_indices[e+1]] - dat$Seconds[get_indices[e]])
 }
-# NOTE: the first entry of 'final_dur' is the duration of the first resting period;
+# NOTE: the first entry of 'trueintervals_dur' is the duration of the first resting period;
 # the second entry is the duration of the first eating period;
 # the third entry is the duration the second resting period; ...
