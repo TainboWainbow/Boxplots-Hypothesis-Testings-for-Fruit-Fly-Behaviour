@@ -9,15 +9,20 @@ dat$Seconds <- dat$Seconds-dat$Seconds[1]
 
 # Obtain a list recording the indices of 'dat' at which the fly's state changes
 # from 0 to 1, or from 1 to 0
-state_change <- c(1) # adding the first index
+state_change <- c()
 flag <- 0 # the fly's initial state is always resting (state0)
-for (i in 2:nrow(dat)){
-  if (dat$`ON/OFF`[i] != flag){
+for (i in 1:length(dat$"ON/OFF")){
+  if (dat$"ON/OFF"[i] != flag){
     state_change <- c(state_change, i)
-    flag <- dat$`ON/OFF`[i]
+    flag <- dat$"ON/OFF"[i]
   }
 }
 # NOTE: not adding the last index by Assumption 2 in 'key.pdf'
+
+
+if (sum(state_change)==0){
+  print ("There is no change in state for this data")
+}
 
 
 # Obtain interval duration (unit in seconds) between those changes of states
@@ -39,15 +44,13 @@ for (k in 1:length(state_change)){
 time_enough <- c()
 for (t in 1:length(interval_dur)){
   
-  if (t%%2 == 1){ # if ODD-numbered-index, it is state0
-    time_enough <- c(time_enough, interval_dur[t] >= 10)
-    
-  } else { # if (t%%2 == 0){ # if EVEN-numbered-index, it is state1
+  if (t%%2 == 1){ # if ODD-numbered-index, it is state1
     time_enough <- c(time_enough, interval_dur[t] >= 5)
+    
+  } else { # if (t%%2 == 0){ # if EVEN-numbered-index, it is state0
+    time_enough <- c(time_enough, interval_dur[t] >= 10)
   }
 }
-# adding TRUE as first entry to print first index of 'dat' later
-time_enough <- c(TRUE, time_enough)
 
 # NOTE1: this time we don't need to add the last index
 # (since if last interval is FALSE, there's no need to calculate the duration of this interval)
@@ -60,15 +63,20 @@ time_enough <- c(TRUE, time_enough)
 # record in 'truestates'
 truestates <- which(time_enough == TRUE)
 
-
 # Obtain the indices of 'state_change'  where the changes of true state intervals occur
 # See 'Assumption 2' in 'key.pdf'
-trueintervals <- c(1)
+
 # first, we look for an EVEN numbered index (state1) since the initial state of the fly is always 
 # resting (state0)
-oddeven <- "EVEN"
-for (j in 2:length(truestates)){ # start from the second index
-  
+remainder <- truestates[1]%%2
+if (remainder == 0){
+  oddeven <- "EVEN"
+} else if (remainder == 1){
+  oddeven <- "ODD"
+}
+
+trueintervals <- c()
+for (j in 1:length(truestates)){ # start from the second index
   if (oddeven == "ODD" & truestates[j]%%2 == 1){
     trueintervals <- c(trueintervals, truestates[j])
     # for the next true state, we're looking for the next even-number-indexed state
@@ -84,7 +92,6 @@ for (j in 2:length(truestates)){ # start from the second index
 
 # Obtain the indices of data, 'dat'
 get_indices <- state_change[c(trueintervals)]
-get_indices <- c(1, get_indices[2:length(get_indices)]-1)
 
 
 # Finally, obtain the duration (in seconds) of the oscillating true intervals of 
@@ -101,7 +108,7 @@ for (e in 1:length(get_indices)){
 # the third entry is the duration the second resting period; ...
 
 
-# Finally,
+# Producing a set of results
 remainder <- truestates[1]%%2
 if (remainder == 0){
   final_resting <- trueintervals_dur[seq(from=1, to=length(trueintervals_dur), by=2)]
