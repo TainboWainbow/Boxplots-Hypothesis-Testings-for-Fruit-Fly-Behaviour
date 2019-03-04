@@ -99,3 +99,14 @@ for (e in 1:length(get_indices)){
 # NOTE: the first entry of 'trueintervals_dur' is the duration of the first resting period;
 # the second entry is the duration of the first eating period;
 # the third entry is the duration the second resting period; ...
+
+
+# Finally,
+remainder <- truestates[1]%%2
+if (remainder == 0){
+  final_resting <- trueintervals_dur[seq(from=1, to=length(trueintervals_dur), by=2)]
+  final_feeding <- trueintervals_dur[seq(from=2, to=length(trueintervals_dur), by=2)]
+} else if (remainder == 1){
+  final_feeding <- trueintervals_dur[seq(from=1, to=length(trueintervals_dur), by=2)]
+  final_resting <- trueintervals_dur[seq(from=2, to=length(trueintervals_dur), by=2)]
+}
