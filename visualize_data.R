@@ -81,4 +81,4 @@ plot(aov(duration ~ state, data = compare_boxes), main = "By state of flies", 1)
 
 # 2. Homogeneity of variance - Levene's Test
 leveneTest(duration ~ condition, data = compare_boxes)
-#leveneTest(duration ~ state, data = compare_boxes)
+leveneTest(duration ~ state, data = compare_boxes)
