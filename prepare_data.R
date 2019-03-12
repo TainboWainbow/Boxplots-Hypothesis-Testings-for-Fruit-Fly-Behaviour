@@ -1,5 +1,9 @@
-setwd("C:/Users/User/Documents/MY_DIRECTORY")
+if ("readxl" %in% installed.packages()){
+  install.packages("readxl")
+}
 library(readxl)
+
+setwd("C:/Users/User/Documents/FOLDER_NAME")
 dat <- read_xlsx("DATA_FILE_NAME.xlsx", col_names=TRUE)
 dat$"ON/OFF" <- as.integer(dat$"ON/OFF")
 
@@ -117,3 +121,4 @@ if (remainder == 0){
   final_feeding <- trueintervals_dur[seq(from=1, to=length(trueintervals_dur), by=2)]
   final_resting <- trueintervals_dur[seq(from=2, to=length(trueintervals_dur), by=2)]
 }
+
