@@ -14,13 +14,14 @@ final_resting <- data.frame("duration" = final_resting, "state" = c(rep("resting
 final_feeding <- data.frame("duration" = final_feeding, "state" = c(rep("feeding", times = length(final_feeding))))
 final <- rbind(final_resting, final_feeding)
 
-final$"condition" <- c(rep("fed", times = nrow(final)))
-final$"date" <- c(rep("07/27", times = nrow(final)))
+# Create columns with appropriate names - ADJUST FOR EVERY DATAFRAME
+final$"condition" <- c(rep("starved", times = nrow(final)))
+final$"date" <- c(rep("07/26", times = nrow(final)))
 final$"fly" <- c(rep(6, times = nrow(final)))
 
 
 # Collect all final results of all sets of  observation into one data frame called 'compare_boxes'
-compare_boxes <- data.frame()
+# Run only ONCE: compare_boxes <- data.frame()
 compare_boxes <- rbind(compare_boxes, final)
 
 
