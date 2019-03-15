@@ -48,4 +48,3 @@ rest.aov <- aov(duration ~ condition, data = resting)
 
 summary(feed.aov)
 summary(rest.aov)
-
