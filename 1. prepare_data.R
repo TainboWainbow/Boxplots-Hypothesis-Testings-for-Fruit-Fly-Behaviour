@@ -43,7 +43,8 @@ for (k in 1:length(state_change)){
 }
 
 
-# Check if interval between two states is >=10 seconds for state0 and >=5 seconds for state1
+# Check if interval between two states is at least 10 seconds for state0 
+# and at least 5 seconds for state1
 # See definitions (3) and (5) under the section 'Definitions' in 'key.pdf'
 time_enough <- c()
 for (t in 1:length(interval_dur)){
@@ -121,4 +122,3 @@ if (remainder == 0){
   final_feeding <- trueintervals_dur[seq(from=1, to=length(trueintervals_dur), by=2)]
   final_resting <- trueintervals_dur[seq(from=2, to=length(trueintervals_dur), by=2)]
 }
-
