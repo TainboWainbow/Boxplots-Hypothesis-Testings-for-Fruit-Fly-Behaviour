@@ -1,6 +1,11 @@
 # Fruit Fly Behaviour: Creating Boxplots and applying ANOVA
-A research project done at the University of Ottawa to study the resting and eating behaviour of fed and starved fruit flies in a closed lab settting.
+A research team at the University of Ottawa studied the resting and eating behaviour of fed and starved fruit flies in a closed lab settting. Data was collected at the lab and was segmented as either eating or resting intervals. Data was cleaned and analyzed with R.
 
-Once data was collected at a lab, it was separated into intervals of either eating or resting state. After cleaning and preparing the data, R was used for data visualization and analysis. Read 'key.pdf' for details on the objective, assumptions and method of the analysis; read '1. prepare_data.R' for the script to clean and format the excel file data for analysis; read 'compare_boxes.txt' to obtain the dataset after running the script '1. prepare_data.R'; read '2. visualize_data.R' to transform data into boxplots; read '3. analyze_data.R' to statistically analyze the results and to test the assumptions associated with the analysis.. Finally, read 'results.pdf' for the interpretation of the analysis and their results.
+- Read 'key.pdf' for details on the objective, assumptions and method of the analysis
+- Script '1. prepare_data.R' cleans and prepares the excel file data for analysis
+- Script 'compare_boxes.txt' transforms the dataset after running the script '1. prepare_data.R'
+- Script '2. visualize_data.R' visualizes the data as boxplots
+- Script '3. analyze_data.R' statistically analyzes the data and tests the assumptions associated with the analysis
+- Finally, 'results.pdf' summarizes the restuls and their interpretation
 
-Please contact Yuji Jeong at yjeon009@uottawa.ca for inquiries.
+Please contact me at yjeon009@uottawa.ca for inquiries!
